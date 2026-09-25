@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Whispers of the Sirens</title>
+<style>
+  :root{
+    --bg:#1b1a2e; --panel:#25243b; --ink:#f2eee6;
+    --muted:#9d99b8; --accent:#e0a458; --line:#3a3856;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; background:var(--bg); color:var(--ink);
+    font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+    padding: 32px 18px 60px;
+  }
+  .wrap{max-width:460px; margin:0 auto;}
+  h1{font-size:1.4rem; margin:0 0 4px; font-weight:600;}
+  .sub{font-size:0.85rem; color:var(--muted); margin:0 0 26px;}
+  .moods{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:24px;}
+  .mood{
+    padding:16px 8px; border-radius:12px; background:var(--panel); border:1px solid var(--line);
+    text-align:center; cursor:pointer; font-size:0.85rem; color:var(--ink);
+    transition:transform .12s ease, border-color .12s ease;
+  }
+  .mood:hover{transform:translateY(-2px);}
+  .mood.active{border-color:var(--accent); background:#2d2b4a;}
+  .mood .emoji{font-size:1.5rem; display:block; margin-bottom:6px;}
+  .result{
+    display:none; background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:20px;
+  }
+  .result.show{display:block;}
+  .playlist-name{font-size:1.1rem; color:var(--accent); margin:0 0 4px; font-weight:600;}
+  .playlist-tag{font-size:0.78rem; color:var(--muted); margin:0 0 16px;}
+  ol{margin:0; padding-left:20px;}
+  li{margin-bottom:10px; line-height:1.4;}
+  .song{font-weight:600;}
+  .artist{color:var(--muted); font-size:0.85rem;}
+  .reroll{
+    margin-top:16px; width:100%; padding:11px; border-radius:8px; border:none;
+    background:var(--accent); color:#1b1a2e; font-weight:600; cursor:pointer; font-size:0.9rem;
+  }
+  .reroll:hover{opacity:0.9;}
+  footer{margin-top:26px; font-size:0.72rem; color:#67638a; font-style:italic;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>the jukebox knows</h1>
+  <p class="sub">tell it your mood, it hands you six songs and a name for the playlist.</p>
+
+  <div class="moods" id="moods"></div>
+  <div class="result" id="result">
+    <p class="playlist-name" id="pName"></p>
+    <p class="playlist-tag" id="pTag"></p>
+    <ol id="pList"></ol>
+    <button class="reroll" id="reroll">shuffle a different six</button>
+  </div>
+
+  <footer>song picks are curated suggestions, not a live streaming connection.</footer>
+</div>
+
+<script>
+const MOODS = {
+  sunny: {emoji:'☀️', tag:'bright, warm, a little breezy', names:['Golden Hour Errands','Windows Down','Sidewalk Chalk'],
+    songs:[
+      ['Here Comes the Sun','The Beatles'],['Walking on Sunshine','Katrina and the Waves'],
+      ['Good as Hell','Lizzo'],['Sunday Best','Surfaces'],['Valerie','Amy Winehouse'],
+      ['Best Day of My Life','American Authors'],['I Wanna Dance with Somebody','Whitney Houston'],
+      ['Electric Feel','MGMT'],['Blue Skies','Noah Kahan'],['Landslide','Fleetwood Mac']
+    ]},
+  cozy: {emoji:'🌙', tag:'slow evenings, low light', names:['Blanket Fort Radio','Tea Gone Cold','Rainy Window Seat'],
+    songs:[
+      ['Skinny Love','Bon Iver'],['Holocene','Bon Iver'],['Ivy','Frank Ocean'],
+      ['Cornelia Street','Taylor Swift'],['To Build a Home','The Cinematic Orchestra'],
+      ['Sea of Love','Cat Power'],['Motion Picture Soundtrack','Radiohead'],
+      ['Coffee','Sylvan Esso'],['Slow Show','The National'],['Lover, You Should\u2019ve Come Over','Jeff Buckley']
+    ]},
+  heartbreak: {emoji:'💔', tag:'the ache, and then the healing', names:['Parking Lot Cry','Text Left on Read','Slow Rebuild'],
+    songs:[
+      ['Someone Like You','Adele'],['liability','Lorde'],['White Ferrari','Frank Ocean'],
+      ['Cry Me a River','Justin Timberlake'],['Skinny Love','Birdy'],
+      ['Jealous','Labrinth'],['Green Light','Lorde'],['Hurt','Johnny Cash'],
+      ['Easy on Me','Adele'],['Liability (Reprise)','Lorde']
+    ]},
+  hype: {emoji:'🔥', tag:'main character, main volume', names:['Villain Origin Story','Locker Room Speech','Red Light District'],
+    songs:[
+      ['Till I Collapse','Eminem'],['Level Up','Ciara'],['Physical','Dua Lipa'],
+      ['Power','Kanye West'],['Stronger','Kanye West'],['Bring Me to Life','Evanescence'],
+      ['Titanium','David Guetta ft. Sia'],['Run the World (Girls)','Beyoncé'],
+      ['Confident','Demi Lovato'],['Immigrant Song','Led Zeppelin']
+    ]},
+  focus: {emoji:'🧠', tag:'heads down, headphones on', names:['Do Not Disturb','Tunnel Vision','Silent Library'],
+    songs:[
+      ['Weightless','Marconi Union'],['Intro','The xx'],['Porz Goret','Yann Tiersen'],
+      ['Strobe','deadmau5'],['On Reflection','Gogo Penguin'],
+      ['Divenire','Ludovico Einaudi'],['An Ending (Ascent)','Brian Eno'],
+      ['Midnight City','M83'],['Svefn-g-englar','Sigur Rós'],['Nuvole Bianche','Ludovico Einaudi']
+    ]},
+  nostalgic: {emoji:'📼', tag:'old bedroom, old feelings', names:['Rewind Tape','Glovebox Mixtape','2013 Reboot'],
+    songs:[
+      ['Champagne Supernova','Oasis'],['Mr. Brightside','The Killers'],['Ribs','Lorde'],
+      ['1985','Bowling for Soup'],['Yellow','Coldplay'],['Somebody Told Me','The Killers'],
+      ['Video Games','Lana Del Rey'],['Sk8er Boi','Avril Lavigne'],
+      ['Such Great Heights','The Postal Service'],['All Star','Smash Mouth']
+    ]}
+};
+
+const moodsEl = document.getElementById('moods');
+Object.entries(MOODS).forEach(([key, m])=>{
+  const div = document.createElement('div');
+  div.className = 'mood';
+  div.dataset.mood = key;
+  div.innerHTML = `<span class="emoji">${m.emoji}</span>${key}`;
+  moodsEl.appendChild(div);
+});
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+let currentMood = null;
+
+function showPlaylist(key){
+  const m = MOODS[key];
+  const picks = shuffle(m.songs).slice(0,6);
+  document.getElementById('pName').textContent = m.names[Math.floor(Math.random()*m.names.length)];
+  document.getElementById('pTag').textContent = m.tag;
+  const list = document.getElementById('pList');
+  list.innerHTML = '';
+  picks.forEach(([song, artist])=>{
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="song">${song}</span><br><span class="artist">${artist}</span>`;
+    list.appendChild(li);
+  });
+  document.getElementById('result').classList.add('show');
+}
+
+moodsEl.addEventListener('click', (e)=>{
+  const card = e.target.closest('.mood');
+  if(!card) return;
+  document.querySelectorAll('.mood').forEach(c=>c.classList.remove('active'));
+  card.classList.add('active');
+  currentMood = card.dataset.mood;
+  showPlaylist(currentMood);
+});
+
+document.getElementById('reroll').addEventListener('click', ()=>{
+  if(currentMood) showPlaylist(currentMood);
+});
+</script>
+</body>
+</html>
