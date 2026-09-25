@@ -21,7 +21,7 @@ The project focuses on practicing:
 * Embedding external content with `<iframe>`
 * Git and GitHub version control
 
-## 🎧 Features
+## Features
 
 🎀 Six different moods
 * ☀️ Sunny
@@ -30,14 +30,14 @@ The project focuses on practicing:
 * 🔥 Hype
 * 🧠 Focus
 * 📼 Nostalgic
-🎵 Randomly selects six songs
-🔀 Shuffle/reroll for a different set of songs
-🎧 Spotify embedded players
-📱 Responsive layout for smaller screens
-🌱 Green, pink, light yellow, and light blue color palette
-🎀 Mood-specific playlist names and descriptions
+  Randomly selects six songs
+  huffle/reroll for a different set of songs
+  Spotify embedded players
+  Responsive layout for smaller screens
+  Green, pink, light yellow, and light blue color palette
+  Mood-specific playlist names and descriptions
 
-## 🛠️ Built With
+## Built With
 
 * **HTML5** — page structure
 * **CSS3** — styling, layout, colors, and responsive design
@@ -47,7 +47,7 @@ The project focuses on practicing:
 
 The project is intentionally kept simple as a single-page website.
 
-## 🎨 How It Works
+## How It Works
 
 The website stores a collection of Spotify track IDs in a JavaScript array.
 
@@ -62,7 +62,7 @@ When a user selects a mood:
 
 Clicking **"shuffle a different six :3"** repeats the process and generates another set of tracks.
 
-## 🎵 Spotify Tracks
+## Spotify Tracks
 
 The project uses Spotify track links supplied for the project and converts their track IDs into Spotify embedded players.
 
@@ -70,7 +70,7 @@ This website **does not directly connect to a user's private Spotify account** o
 
 Instead, the project uses a static collection of Spotify track IDs that were provided to the website.
 
-## 🚀 Running Locally
+## Running Locally
 
 Clone the repository:
 
@@ -88,22 +88,22 @@ Then open `index.html` in your browser.
 
 You can also use the **Live Server** extension in VS Code for easier development.
 
-## 🔮 Future Improvements
+## Future Improvements
 
 Possible improvements for future versions:
 
-* 🔐 Connect directly to Spotify using OAuth
-* 🎵 Automatically retrieve a user's actual Liked Songs
-* 🧠 Categorize songs based on mood
-* 🎨 Add animated backgrounds and transitions
-* ❤️ Allow users to save favorite generated playlists
-* 📱 Improve the mobile experience
-* 🔎 Add song search and filtering
-* 🎚️ Add mood intensity controls
-* 💾 Store generated playlists locally
-* 🌐 Deploy the project as a live website
+* Connect directly to Spotify using OAuth
+* Automatically retrieve a user's actual Liked Songs
+* Categorize songs based on mood
+* Add animated backgrounds and transitions
+* Allow users to save favorite generated playlists
+* Improve the mobile experience
+* Add song search and filtering
+* Add mood intensity controls
+* Store generated playlists locally
+* Deploy the project as a live website
 
-## 📚 What I Learned
+## What I Learned
 
 This project helped me practice turning a simple idea into an interactive web application.
 
@@ -111,7 +111,7 @@ Some of the main concepts I worked with were **JavaScript objects and arrays, fu
 
 It also gave me hands-on experience using **Git and GitHub** to track and publish my work.
 
-## 👩‍💻 Author
+## Author
 
 **Jilian Rai Tusaneza**
 
